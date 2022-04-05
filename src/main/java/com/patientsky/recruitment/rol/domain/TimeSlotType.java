@@ -13,4 +13,9 @@ public class TimeSlotType {
     String name;
     int slotSize;
 
+    public TimeSlotType(UUID id, String name, int slotSize) {
+        this.id = id;
+        this.name = name;
+        this.slotSize = slotSize;
+    }
 }

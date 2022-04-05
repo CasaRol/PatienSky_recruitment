@@ -1,26 +1,21 @@
 package com.patientsky.recruitment.rol.schedules;
 
 import com.patientsky.recruitment.rol.domain.Appointment;
+import com.patientsky.recruitment.rol.domain.Owner;
+import com.patientsky.recruitment.rol.domain.TimeSlot;
+import com.patientsky.recruitment.rol.domain.TimeSlotType;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.UUID;
 
 import static com.patientsky.recruitment.rol.Utilities.sdf;
@@ -30,22 +25,26 @@ public class CreateSchedulesOnStartUp {
 
     public void populateProvidedSchedules() {
 
-        loadJoanna();
+        Owner joanna = loadOwner("Joanna", "Joanna Hef.json");
+        Owner emma = loadOwner("Emma", "Emma Win.json");
+        Owner danny = loadOwner("Danny", "Danny boy.json");
 
     }
 
-    private void loadJoanna() {
+    private Owner loadOwner(String name, String fileName) {
+        Resource resource = new ClassPathResource("providedFiles/" + fileName);
 
-        Resource resource = new ClassPathResource("providedFiles/JoannaHef.json");
+        ArrayList<Appointment> appointments = new ArrayList<>();
+        ArrayList<TimeSlot> timeslots = new ArrayList<>();
+        ArrayList<TimeSlotType> timeSlotTypes = new ArrayList<>();
+
         try {
             JSONParser parser = new JSONParser();
             FileReader reader = new FileReader(resource.getFile());
 
-            JSONObject joannaObj = (JSONObject) parser.parse(reader);
+            JSONObject ownerObj = (JSONObject) parser.parse(reader);
 
-            JSONArray appointmentsArray = (JSONArray) joannaObj.get("appointments");
-            ArrayList<Appointment> appointments = new ArrayList();
-
+            JSONArray appointmentsArray = (JSONArray) ownerObj.get("appointments");
             if(appointmentsArray != null) {
                 for(int i = 0; i < appointmentsArray.size(); i++) {
                     JSONObject appointmentsObj = (JSONObject) appointmentsArray.get(i);
@@ -61,16 +60,47 @@ public class CreateSchedulesOnStartUp {
                 }
             }
 
-            //System.out.println("Joanna appointments = " + joannaObj.get("appointments"));
+            JSONArray timeSlotArray = (JSONArray) ownerObj.get("timeslots");
+            if(timeSlotArray != null) {
+                for(int i = 0; i < timeSlotArray.size(); i++) {
+                    JSONObject timeSlotObj = (JSONObject) timeSlotArray.get(i);
+
+                    timeslots.add(new TimeSlot(
+                            UUID.fromString((String) timeSlotObj.get("id")),
+                            UUID.fromString((String) timeSlotObj.get("calendar_id")),
+                            sdf.parse(timeSlotObj.get("start").toString()),
+                            sdf.parse(timeSlotObj.get("end").toString())
+                            )
+                    );
+                }
+            }
+
+            JSONArray timeSlotTypeArray = (JSONArray) ownerObj.get("timeslottypes");
+            if(timeSlotTypeArray != null) {
+                for(int i = 0; i < timeSlotTypeArray.size(); i++) {
+                    JSONObject timeSlotTypeObj = (JSONObject) timeSlotTypeArray.get(i);
+
+                    timeSlotTypes.add(new TimeSlotType(
+                            UUID.fromString((String) timeSlotTypeObj.get("id")),
+                            (String) timeSlotTypeObj.get("name"),
+                            Integer.parseInt(timeSlotTypeObj.get("slot_size").toString())
+                            )
+                    );
+                }
+            }
+
+            System.out.println(name + " appointments = " + ownerObj.get("appointments"));
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (java.text.ParseException e) {
             e.printStackTrace();
         }
+
+        return new Owner(name, appointments, timeslots, timeSlotTypes);
     }
 }

@@ -14,4 +14,10 @@ public class TimeSlot {
     Date start;
     Date end;
 
+    public TimeSlot(UUID id, UUID calendarID, Date start, Date end) {
+        this.id = id;
+        this.calendarID = calendarID;
+        this.start = start;
+        this.end = end;
+    }
 }
