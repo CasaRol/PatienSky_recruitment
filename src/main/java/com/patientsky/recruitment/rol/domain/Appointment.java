@@ -11,10 +11,10 @@ public class Appointment {
 
     //Assignment focused attributes
     UUID id; //Appointment ID
-    UUID patientId;
+    UUID patientId; //Patient ID
     UUID calendarId; //Calendar ID
-    Date start; //Appointment start - ISO-8601 format
-    Date end; //Appointment end - ISO-8601 format
+    Date start; //Appointment start
+    Date end; //Appointment end
 
     public Appointment(UUID id, UUID patientId, UUID calendarId, Date start, Date end) {
         this.id = id;
@@ -23,6 +23,4 @@ public class Appointment {
         this.start = start;
         this.end = end;
     }
-
-    //static DateFormat df = new SimpleDateFormat("yyy-MM-dd'T'HH:mm:ssZ")
 }
