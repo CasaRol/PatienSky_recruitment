@@ -1,11 +1,14 @@
 package com.patientsky.recruitment.rol.controllers;
 
+import com.patientsky.recruitment.rol.domain.Interval;
+import com.patientsky.recruitment.rol.domain.Request;
 import com.patientsky.recruitment.rol.schedules.CreateSchedulesOnStartUp;
 import com.patientsky.recruitment.rol.services.AppointmentPlanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,15 +24,20 @@ public class ScheduleController {
     AppointmentPlanner appointmentPlanner;
 
     @GetMapping("/findAvailableTime")
-    public ResponseEntity<List> findAvailableTime() {
-        List<UUID> testList = new ArrayList<>();
-        testList.add(UUID.fromString("48cadf26-975e-11e5-b9c2-c8e0eb18c1e9"));
-        testList.add(UUID.fromString("48644c7a-975e-11e5-a090-c8e0eb18c1e9"));
-        testList.add(UUID.fromString("452dccfc-975e-11e5-bfa5-c8e0eb18c1e9"));
-        appointmentPlanner.findAvailableTime(testList, 15, "2019-04-23T10:00:00/2019-04-23T18:45:00");
+    public ResponseEntity<List<Interval>> findAvailableTime(@RequestBody Request request) {
+        System.out.println("Call was attempted");
+        List<UUID> idList = new ArrayList<>();
+        for(String id : request.getCalendarIds()) {
+            idList.add(UUID.fromString(id));
+        }
 
+        System.out.println(request.getCalendarIds());
+        System.out.println(request.getDuration());
+        System.out.println(request.getInterval());
 
-        //List<Owner> owners = createSchedulesOnStartUp.populateProvidedSchedules();
-        return new ResponseEntity(null, HttpStatus.OK);
+        List<Interval> possibleTimes = appointmentPlanner.findAvailableTime(idList, request.getDuration(), request.getInterval());
+
+        return new ResponseEntity(possibleTimes, HttpStatus.OK);
     }
+
 }

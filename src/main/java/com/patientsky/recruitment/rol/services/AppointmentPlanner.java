@@ -20,7 +20,7 @@ public class AppointmentPlanner {
     private final List<Owner> owners = createSchedulesOnStartUp.populateProvidedSchedules();
 
 
-    public void findAvailableTime(List<UUID> calendarIds, int duration, String periodToSearch) {
+    public List<Interval> findAvailableTime(List<UUID> calendarIds, int duration, String periodToSearch) {
 
         //Splitting timeInterval into start and end
         Map<String, String> intervals = startAndEndTimeInterval(periodToSearch);
@@ -61,6 +61,7 @@ public class AppointmentPlanner {
 
         List<Interval> foundMatches = findCommonAvailableTimes(ownerFreeTime, duration);
 
+        return foundMatches;
 
     }
 

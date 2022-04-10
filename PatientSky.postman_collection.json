@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "9ae2f6ba-752d-4fcc-a925-c8d84203577a",
+		"name": "PatientSky",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Main request",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"calendarIds\" : [\"48cadf26-975e-11e5-b9c2-c8e0eb18c1e9\",\r\n    \"48644c7a-975e-11e5-a090-c8e0eb18c1e9\",\r\n    \"452dccfc-975e-11e5-bfa5-c8e0eb18c1e9\"],\r\n    \"duration\" : 15,\r\n    \"interval\" : \"2019-04-23T10:00:00/2019-04-23T18:45:00\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/api/v1/findAvailableTime",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"findAvailableTime"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
