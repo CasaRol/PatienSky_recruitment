@@ -31,10 +31,6 @@ public class ScheduleController {
             idList.add(UUID.fromString(id));
         }
 
-        System.out.println(request.getCalendarIds());
-        System.out.println(request.getDuration());
-        System.out.println(request.getInterval());
-
         List<Interval> possibleTimes = appointmentPlanner.findAvailableTime(idList, request.getDuration(), request.getInterval());
 
         return new ResponseEntity(possibleTimes, HttpStatus.OK);
